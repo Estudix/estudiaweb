@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Plataforma IA para Estudiantes</title>
+<style>
+  /* --- Paleta pasteles suaves y estilos generales --- */
+  :root{
+    --bg:#fbfaf9;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --accent1:#c6e7ff; /* celeste pastel */
+    --accent2:#ffd6e0; /* rosa pastel */
+    --accent3:#dff7e4; /* verde menta */
+    --primary:#4b5563;
+    --glass: rgba(255,255,255,0.7);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:linear-gradient(180deg,var(--bg), #f6f7f9);color:var(--primary);-webkit-font-smoothing:antialiased}
+  header{padding:34px 18px;text-align:center;background:linear-gradient(135deg,var(--accent1),var(--accent3));border-bottom-left-radius:18px;border-bottom-right-radius:18px;box-shadow:0 8px 30px rgba(20,20,40,0.04)}
+  .logo-wrap{display:flex;gap:14px;align-items:center;justify-content:center}
+  .logo-svg{width:86px;height:86px}
+  h1{margin:12px 0 6px;font-size:2rem;line-height:1.05}
+  p.lead{margin:0;color:var(--muted);font-size:1rem}
+  main{max-width:1100px;margin:22px auto;padding:18px}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr} .logo-svg{width:72px;height:72px}}
+  .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 20px rgba(20,20,40,0.04)}
+  h2{margin:0 0 10px}
+  .muted{color:var(--muted);font-size:0.95rem}
+  .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,#9ad3ff,#c9ffd5);color:#123;cursor:pointer;font-weight:700;text-decoration:none;border:none}
+  .btn.secondary{background:linear-gradient(90deg,#ffd6e0,#ffe9b8)}
+  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  input[type="text"], input[type="date"], textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6edf2;background:white}
+  label{font-weight:600;font-size:0.95rem;margin-bottom:6px;display:block}
+  small.note{display:block;color:var(--muted);margin-top:8px}
+  .task-list{max-height:260px;overflow:auto;margin-top:8px}
+  .task-item{padding:10px;border-radius:8px;background:#fbfbfd;border:1px solid #eef3f7;margin-bottom:8px}
+  .task-meta{font-size:0.88rem;color:var(--muted);margin-top:6px}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .media-grid{display:flex;gap:8px;flex-wrap:wrap}
+  .media-grid img{width:100px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #eef3f7}
+  .video-embed{width:100%;height:180px;border-radius:8px;border:0}
+  /* mapa mental */
+  .map-canvas{min-height:200px;border-radius:8px;border:1px dashed #e6edf2;padding:10px;background:linear-gradient(180deg,#fff,#fbfdff)}
+  .map-node{display:inline-block;padding:8px 12px;background:linear-gradient(90deg,#fff9f9,#f2fff8);border-radius:14px;margin:8px;border:1px solid #eee;cursor:text}
+  /* calculadora */
+  .calc-screen{width:100%;padding:10px;border-radius:8px;border:1px solid #e6edf2;text-align:right;font-size:1.05rem}
+  .calc-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+  .calc-buttons button{padding:12px;border-radius:8px;border:none;background:#f3f6ff;cursor:pointer;font-weight:600}
+  footer{text-align:center;color:var(--muted);padding:28px 12px;margin-top:18px}
+  /* utilidad */
+  .center{text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <!-- Logo ilustrado (SVG) — cerebro + chip + libro + colores pasteles -->
+    <svg class="logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#c6e7ff"/><stop offset="1" stop-color="#ffd6e0"/></linearGradient>
+        <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#dff7e4"/><stop offset="1" stop-color="#c6e7ff"/></linearGradient>
+      </defs>
+      <rect rx="18" width="120" height="120" fill="white" opacity="0.02"/>
+      <!-- cerebro -->
+      <path d="M40 45c-6 0-10 5-10 11s4 11 10 11h40c6 0 10-5 10-11s-4-11-10-11H40z" fill="url(#g1)" stroke="#9fbfd8" stroke-width="1.2"/>
+      <g transform="translate(12,8)" fill="#fff" opacity="0.06">
+        <circle cx="10" cy="12" r="6"/><circle cx="40" cy="18" r="4"/><circle cx="62" cy="14" r="5"/>
+      </g>
+      <!-- chip -->
+      <rect x="46" y="30" width="28" height="20" rx="3" fill="url(#g2)" stroke="#9ad7b8"/>
+      <g stroke="#9ad7b8" stroke-width="1.6">
+        <line x1="46" y1="38" x2="38" y2="34"/><line x1="74" y1="38" x2="82" y2="34"/>
+        <line x1="46" y1="46" x2="38" y2="50"/><line x1="74" y1="46" x2="82" y2="50"/>
+      </g>
+      <!-- libro pequeño -->
+      <path d="M18 82 h24 v14 h-24 z" fill="#fff7e8" stroke="#ffd3b6"/>
+      <path d="M20 84 h20 v10 h-20 z" fill="#fff" opacity="0.7"/>
+    </svg>
+
+    <!-- texto -->
+    <div>
+      <h1>Aprender nunca fue tan inteligente</h1>
+      <p class="lead">Plataforma creada por estudiantes, para estudiantes — estudia, investiga y crea con ayuda de IA</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <!-- columna principal -->
+    <div>
+      <!-- Sección explicativa -->
+      <section class="card">
+        <h2>¿Qué puedes hacer aquí?</h2>
+        <p class="muted">Registra tareas con fecha de entrega y una fecha recomendada de inicio, genera mapas mentales, busca información y videos para tus investigaciones, usa la calculadora científica y comparte los recursos que encuentres.</p>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn" onclick="goTo('tasks')">📅 Ir a Organizador de Tareas</button>
+          <button class="btn secondary" onclick="goTo('maps')">🧠 Ir a Mapas Mentales</button>
+          <button class="btn" onclick="goTo('research')">🔍 Ir a Investigación (IA)</button>
+          <button class="btn secondary" onclick="goTo('calc')">🧮 Ir a Calculadora</button>
+        </div>
+      </section>
+
+      <!-- Organizador de tareas -->
+      <section id="tasks" class="card" style="margin-top:14px">
+        <h2>Organizador de tareas</h2>
+        <div style="display:grid;grid-template-columns:1fr 160px;gap:10px">
+          <div>
+            <label for="taskTitle">Título de la tarea</label>
+            <input id="taskTitle" placeholder="Ej: Resumen capítulo 4" />
+          </div>
+          <div>
+            <label for="dueDate">Fecha de entrega</label>
+            <input id="dueDate" type="date" />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+          <div style="flex:1">
+            <label for="taskNotes">Notas (opcional)</label>
+            <input id="taskNotes" placeholder="Detalles, enlaces, prioridad..." />
+          </div>
+          <div style="width:160px;align-self:end">
+            <button class="btn" onclick="addTask()">Agregar tarea</button>
+          </div>
+        </div>
+        <small class="note">La plataforma calculará una <strong>fecha recomendada para empezar</strong> 3 días antes de la entrega (o el mismo día si hay menos de 3 días).</small>
+
+        <div class="task-list" id="taskList" aria-live="polite"></div>
+
+        <div style="margin-top:10px" class="actions">
+          <button class="btn secondary" onclick="clearTasks()">Limpiar todas</button>
+          <button class="btn" onclick="downloadTasks()">Descargar tareas (.json)</button>
+        </div>
+      </section>
+
+      <!-- Mapas mentales -->
+      <section id="maps" class="card" style="margin-top:14px">
+        <h2>Generador de mapas mentales</h2>
+        <label for="mapTopic">Tema</label>
+        <input id="mapTopic" placeholder="Ej: Revolución industrial" />
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" onclick="generateMap()">Generar mapa sugerido</button>
+          <button class="btn secondary" onclick="clearMap()">Limpiar mapa</button>
+          <button class="btn" onclick="exportMap()">Descargar mapa (txt)</button>
+        </div>
+        <small class="note">Haz doble clic en cualquier nodo para editar. Arrastra y suelta no está activado en esta demo; usa copiar/pegar o botón generar para obtener estructura rápida.</small>
+
+        <div class="map-canvas" id="mapCanvas" style="margin-top:12px" contenteditable="false"></div>
+      </section>
+
+      <!-- Investigación (IA) -->
+      <section id="research" class="card" style="margin-top:14px">
+        <h2>Investigación con IA (conexión)</h2>
+        <label for="query">Escribe tu tema de investigación</label>
+        <input id="query" placeholder="Ej: impacto de redes sociales en moda" />
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" onclick="runResearch()">Buscar (YouTube + Google)</button>
+          <button class="btn secondary" onclick="openGoogleSearch()">Abrir Google</button>
+          <button class="btn ghost" onclick="toggleApiPanel()">Configuración / API keys</button>
+        </div>
+        <small class="note">Si pegas tus claves de YouTube Data API y Bing Image Search en la configuración, la página tratará de traer videos e imágenes en vivo. Si no, se abrirán búsquedas y se mostrarán ejemplos de demo.</small>
+
+        <div id="researchResult" style="margin-top:12px"></div>
+      </section>
+
+      <!-- Calculadora -->
+      <section id="calc" class="card" style="margin-top:14px">
+        <h2>Calculadora científica</h2>
+        <label for="calcExpr">Expresión (usa sin(), cos(), tan(), sqrt(), log(), ln(), exp(), pow())</label>
+        <input id="calcExpr" placeholder="Ej: sin(30) + sqrt(16) - 2^3" />
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" onclick="evalCalc()">Evaluar</button>
+          <button class="btn secondary" onclick="clearCalc()">Limpiar</button>
+        </div>
+        <div id="calcOut" style="margin-top:12px" class="muted">Resultado aparecerá aquí</div>
+        <small class="note">Marca trigonometría en grados si lo deseas en el panel de configuración.</small>
+      </section>
+
+      <!-- Subir recursos -->
+      <section id="resources" class="card" style="margin-top:14px">
+        <h2>Compartir recursos (imágenes / videos)</h2>
+        <label for="fileInput">Sube imágenes (PNG/JPG) o pega enlaces de YouTube</label>
+        <input id="fileInput" type="file" accept="image/*" multiple />
+        <div style="margin-top:8px">
+          <input id="videoLink" placeholder="Pega enlace de YouTube y pulsa 'Agregar video'"/>
+          <button class="btn" onclick="addVideoLink()" style="margin-left:8px">Agregar video</button>
+        </div>
+        <div class="media-grid" id="uploadedMedia" style="margin-top:12px"></div>
+      </section>
+    </div>
+
+    <!-- columna lateral -->
+    <aside>
+      <div class="card">
+        <h3>Panel rápido</h3>
+        <div style="margin-top:8px">
+          <label for="ytApiKey">YouTube API Key (opcional)</label>
+          <input id="ytApiKey" placeholder="Pega tu key aquí (opcional)" />
+          <label for="bingApiKey" style="margin-top:8px">Bing Image Search Key (opcional)</label>
+          <input id="bingApiKey" placeholder="Pega tu key aquí (opcional)" />
+          <label for="useDegrees" style="margin-top:8px">Usar grados en trigonometría</label>
+          <select id="useDegrees"><option value="true">Sí (grados)</option><option value="false">No (radianes)</option></select>
+          <small class="note">Si pegas las keys, la página intentará obtener resultados reales. Para publicar en web (GitHub Pages/Netlify) y llamadas fetch, recuerda servir por https.</small>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3>Atajos</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <button class="btn ghost" onclick="goTo('tasks')">Ir a Tareas</button>
+          <button class="btn ghost" onclick="goTo('research')">Ir a Investigación</button>
+          <button class="btn ghost" onclick="goTo('maps')">Ir a Mapas</button>
+          <button class="btn ghost" onclick="goTo('resources')">Ir a Recursos</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3>Tips para presentación</h3>
+        <ol class="muted">
+          <li>Explica que la IA puede conectarse en vivo si se pegan las API keys.</li>
+          <li>Muestra cómo sumar tareas, generar un mapa y buscar videos para un tema.</li>
+          <li>Indica que las tareas se guardan en este navegador (localStorage).</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  © 2025 Plataforma IA para Estudiantes — Creada por y para estudiantes
+</footer>
+
+<script>
+/* -------------------------
+   Utilidades y almacenamiento
+   ------------------------- */
+const TASKS_KEY = 'ia_tasks_v1';
+function saveTasks(tasks){ localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)) }
+function loadTasks(){ try{ return JSON.parse(localStorage.getItem(TASKS_KEY) || '[]') } catch(e){ return [] } }
+
+/* --- NAVEGACIÓN rápida --- */
+function goTo(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* -------------------------
+   ORGANIZADOR DE TAREAS
+   ------------------------- */
+function formatDateISO(d){ // d: Date
+  const y=d.getFullYear(), m=('0'+(d.getMonth()+1)).slice(-2), day=('0'+d.getDate()).slice(-2);
+  return `${y}-${m}-${day}`;
+}
+function addTask(){
+  const title = document.getElementById('taskTitle').value.trim();
+  const due = document.getElementById('dueDate').value;
+  const notes = document.getElementById('taskNotes').value.trim();
+  if(!title || !due){ alert('Escribe título y fecha de entrega'); return; }
+  const dueDate = new Date(due + 'T23:59:59');
+  // recommended start = dueDate - 3 days
+  const recommended = new Date(dueDate);
+  recommended.setDate(recommended.getDate() - 3);
+  const now = new Date();
+  if(recommended < now) recommended.setDate(now.getDate()); // if past, suggest today
+  const tasks = loadTasks();
+  tasks.push({id:Date.now(), title, due, recommended: formatDateISO(recommended), notes});
+  saveTasks(tasks);
+  renderTasks();
+  // clear inputs
+  document.getElementById('taskTitle').value='';
+  document.getElementById('dueDate').value='';
+  document.getElementById('taskNotes').value='';
+}
+function renderTasks(){
+  const container = document.getElementById('taskList');
+  const tasks = loadTasks();
+  if(tasks.length===0){ container.innerHTML = '<p class="muted">No hay tareas registradas.</p>'; return; }
+  container.innerHTML = '';
+  tasks.sort((a,b)=> new Date(a.due) - new Date(b.due));
+  tasks.forEach(t=>{
+    const div = document.createElement('div');
+    div.className='task-item';
+    div.innerHTML = `<strong>${escapeHtml(t.title)}</strong>
+      <div class="task-meta">Entrega: <strong>${t.due}</strong> · Empezar recomendado: <strong>${t.recommended}</strong></div>
+      <div class="muted" style="margin-top:6px">${escapeHtml(t.notes||'')}</div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn ghost" onclick="markDone(${t.id})">Marcar completada</button>
+        <button class="btn" onclick="deleteTask(${t.id})">Eliminar</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+function deleteTask(id){
+  let tasks = loadTasks();
+  tasks = tasks.filter(t=>t.id!==id);
+  saveTasks(tasks);
+  renderTasks();
+}
+function markDone(id){
+  let tasks = loadTasks();
+  const idx = tasks.findIndex(t=>t.id===id);
+  if(idx>-1){
+    tasks.splice(idx,1);
+    saveTasks(tasks);
+    renderTasks();
+    alert('Tarea marcada como completada ✅');
+  }
+}
+function clearTasks(){
+  if(!confirm('¿Eliminar todas las tareas?')) return;
+  saveTasks([]);
+  renderTasks();
+}
+function downloadTasks(){
+  const tasks = loadTasks();
+  const blob = new Blob([JSON.stringify(tasks,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'tareas.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) }
+
+/* -------------------------
+   MAPA MENTAL (simulado)
+   ------------------------- */
+function generateMap(){
+  const topic = document.getElementById('mapTopic').value.trim() || 'Tema sin nombre';
+  const canvas = document.getElementById('mapCanvas');
+  canvas.innerHTML = '';
+  // simple structure
+  const nodes = [
+    {text: topic},
+    {text: 'Concepto principal'},
+    {text: 'Ideas clave: 1'},
+    {text: 'Ideas clave: 2'},
+    {text: 'Ejemplos'},
+    {text: 'Preguntas para repasar'}
+  ];
+  nodes.forEach(n=>{
+    const nd = document.createElement('div');
+    nd.className='map-node';
+    nd.contentEditable = true;
+    nd.innerText = n.text;
+    canvas.appendChild(nd);
+  });
+}
+function clearMap(){ document.getElementById('mapCanvas').innerHTML=''; }
+function exportMap(){
+  const canvas = document.getElementById('mapCanvas');
+  const texts = Array.from(canvas.querySelectorAll('.map-node')).map(n=>n.innerText.trim());
+  const blob = new Blob([texts.join('\\n')],{type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'mapa_mental.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* -------------------------
+   INVESTIGACIÓN (YouTube + Bing) 
+   - Usa API keys si se pegan en el panel lateral
+   - Si no hay keys o fetch falla, se abre Google/YouTube en nuevas pestañas y se muestran demo videos/images
+   ------------------------- */
+const demoImages = [
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&auto=format&fit=crop&q=60'
+];
+const demoVideos = [
+  'https://www.youtube.com/embed/5MgBikgcWnY', // videos de ejemplo (Khan academy placeholder)
+  'https://www.youtube.com/embed/ysz5S6PUM-U'
+];
+
+async function runResearch(){
+  const q = document.getElementById('query').value.trim();
+  if(!q){ alert('Escribe un tema para investigar'); return; }
+  const out = document.getElementById('researchResult');
+  out.innerHTML = '<div class="muted">Buscando...</div>';
+  const ytKey = document.getElementById('ytApiKey').value.trim();
+  const bingKey = document.getElementById('bingApiKey').value.trim();
+  let images = [], videos = [];
+
+  // 1) Bing Images (if key)
+  if(bingKey){
+    try{
+      const res = await fetch(`https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(q)}&count=6`, {
+        headers: { 'Ocp-Apim-Subscription-Key': bingKey }
+      });
+      if(res.ok){
+        const data = await res.json();
+        images = (data.value || []).slice(0,6).map(i=>i.contentUrl);
+      } else {
+        console.warn('Bing error', res.status);
+      }
+    }catch(e){ console.warn('Bing fetch failed', e) }
+  }
+
+  // 2) YouTube Data API (if key)
+  if(ytKey){
+    try{
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=4&q=${encodeURIComponent(q)}&key=${ytKey}`);
+      if(res.ok){
+        const data = await res.json();
+        videos = (data.items||[]).map(it => 'https://www.youtube.com/embed/' + it.id.videoId);
+      } else {
+        console.warn('YouTube error', res.status);
+      }
+    }catch(e){ console.warn('YouTube fetch failed', e) }
+  }
+
+  // Fallbacks: if no results, use demo
+  if(images.length === 0) images = demoImages;
+  if(videos.length === 0) videos = demoVideos;
+
+  // Render results
+  let html = '<div style="display:flex;gap:12px;flex-direction:column">';
+  html += '<div><strong>Imágenes relacionadas</strong></div>';
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  images.forEach(u => { html += `<img src="${u}" style="width:140px;height:90px;object-fit:cover;border-radius:8px">` });
+  html += '</div>';
+  html += '<div style="margin-top:12px"><strong>Videos</strong></div>';
+  videos.forEach(v => {
+    html += `<div style="margin-top:8px"><iframe class="video-embed" src="${v}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy"></iframe></div>`;
+  });
+  html += '</div>';
+  // description / suggestions (simulated IA)
+  html += `<div style="margin-top:12px" class="card"><strong>Descripción rápida</strong><p class="muted">Tema: ${escapeHtml(q)}<br>Palabras clave: ${escapeHtml(q.split(' ').slice(0,5).join(', '))}</p><small class="note">Sugerencia: pide a la IA real un resumen en 200 palabras o 5 preguntas tipo examen para este tema.</small></div>`;
+  out.innerHTML = html;
+
+  // Also open Google and YouTube search in new tabs for deeper exploration
+  // (we open but do not auto-focus)
+  window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
+  window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(q), '_blank');
+}
+
+/* -------------------------
+   CALCULADORA - Evaluador "seguro"
+   ------------------------- */
+function evalCalc(){
+  const exprEl = document.getElementById('calcExpr');
+  const out = document.getElementById('calcOut');
+  let expr = exprEl.value.trim();
+  if(!expr){ out.textContent = 'Escribe una expresión.'; return; }
+  // allow only safe characters
+  if(!/^[0-9+\-*/^()., \t\nA-Za-z]+$/.test(expr)){ out.textContent = 'Caracteres no permitidos.'; return; }
+  expr = expr.replace(/\^/g,'**'); // support ^
+  const useDeg = document.getElementById('useDegrees').value === 'true';
+  // math functions
+  const sin = (x)=> useDeg ? Math.sin(x*Math.PI/180) : Math.sin(x);
+  const cos = (x)=> useDeg ? Math.cos(x*Math.PI/180) : Math.cos(x);
+  const tan = (x)=> useDeg ? Math.tan(x*Math.PI/180) : Math.tan(x);
+  const sqrt = (x)=> Math.sqrt(x);
+  const log = (x)=> Math.log10(x);
+  const ln = (x)=> Math.log(x);
+  const exp = (x)=> Math.exp(x);
+  const pow = (a,b)=> Math.pow(a,b);
+  const abs = (x)=> Math.abs(x);
+  const PI = Math.PI, E = Math.E;
+  try{
+    const fn = new Function('sin','cos','tan','sqrt','log','ln','exp','pow','abs','PI','E', 'return ('+expr+');');
+    const res = fn(sin,cos,tan,sqrt,log,ln,exp,pow,abs,PI,E);
+    if(typeof res === 'number' && !isFinite(res)) throw new Error('Resultado no finito');
+    out.textContent = 'Resultado: ' + String(res);
+  }catch(e){
+    out.textContent = 'Error al evaluar. Revisa la sintaxis. Ej: sin(30)+sqrt(16)-2^3';
+    console.warn(e);
+  }
+}
+function clearCalc(){ document.getElementById('calcExpr').value=''; document.getElementById('calcOut').textContent='Resultado aparecerá aquí' }
+
+/* -------------------------
+   Recursos: subir imágenes y agregar video links
+   ------------------------- */
+document.getElementById('fileInput').addEventListener('change', (e)=>{
+  const files = Array.from(e.target.files);
+  const container = document.getElementById('uploadedMedia');
+  files.forEach(file=>{
+    if(!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = document.createElement('img'); img.src = reader.result; container.appendChild(img);
+    }
+    reader.readAsDataURL(file);
+  });
+});
+
+function addVideoLink(){
+  const url = document.getElementById('videoLink').value.trim();
+  if(!url){ alert('Pega un enlace de YouTube válido'); return; }
+  const container = document.getElementById('uploadedMedia');
+  // try to extract video id
+  const id = extractYouTubeID(url);
+  if(id){
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://www.youtube.com/embed/' + id;
+    iframe.className = 'video-embed';
+    container.appendChild(iframe);
+    document.getElementById('videoLink').value='';
+  } else {
+    alert('No se reconoció como enlace de YouTube.');
+  }
+}
+function extractYouTubeID(url){
+  const m = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  return m ? m[1] : null;
+}
+
+/* -------------------------
+   API panel toggle
+   ------------------------- */
+function toggleApiPanel(){
+  const inp = document.getElementById('ytApiKey');
+  inp.scrollIntoView({behavior:'smooth'});
+  inp.focus();
+}
+
+/* -------------------------
+   HELPERS INIT
+   ------------------------- */
+renderTasks();
+// renderMaps default empty
+document.addEventListener('keydown', (e)=>{
+  // shortcut S to focus research query
+  if((e.key==='s' || e.key==='S') && (e.ctrlKey || e.metaKey) ){
+    e.preventDefault(); document.getElementById('query').focus();
+  }
+});
+</script>
+</body>
+</html>
